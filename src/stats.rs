@@ -1,4 +1,5 @@
-use regex::RegexSet;
+use crate::parser;
+use filetime::{set_file_mtime, FileTime};
 use serde::Serialize;
 use walkdir::DirEntry;
 
@@ -25,26 +26,25 @@ impl Stats {
 impl FromIterator<DirEntry> for Stats {
     fn from_iter<I: IntoIterator<Item = DirEntry>>(iter: I) -> Self {
         let mut s = Stats::new();
-
-        let set = RegexSet::new(&[
-            r"\w+", r"\d+", r"\pL+", r"foo", r"bar", r"barfoo", r"foobar",
-        ])
-        .unwrap();
+        let p = parser::Parser::new();
 
         for i in iter {
-            //full path:
-            //println!("{}", i.path().display());
-            //filename
-            //println!("{}", i.file_name().to_str().unwrap_or(""));
+            //full path: i.path().display()
+            //filename: i.file_name().to_str()
             s.num_files += 1;
-            // Iterate over and collect all of the matches. Each match corresponds to the
-            // ID of the matching pattern.
-            // https://docs.rs/regex/latest/regex/#example-finding-dates-in-a-haystack
-            // Check https://rust-lang-nursery.github.io/rust-cookbook/text/regex.html#replace-all-occurrences-of-one-text-pattern-with-another-pattern
-            let matches: Vec<_> = set
-                .matches(i.file_name().to_str().unwrap_or(""))
-                .into_iter()
-                .collect();
+
+            match p.captures(i.file_name().to_str().unwrap()) {
+                None => {
+                    s.num_skipped_files += 1;
+                    s.skipped_files
+                        .push(String::from(i.path().to_str().unwrap()));
+                }
+                Some(date_time) => {
+                    s.num_parsed_files += 1;
+                    let mtime = FileTime::from_unix_time(date_time.timestamp(), 0);
+                    set_file_mtime(i.path().to_str().unwrap(), mtime).unwrap();
+                }
+            }
         }
 
         s

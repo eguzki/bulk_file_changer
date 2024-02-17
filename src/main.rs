@@ -1,5 +1,6 @@
 use clap::Parser;
 use walkdir::{DirEntry, WalkDir};
+mod parser;
 mod stats;
 
 /// Search for a pattern in a file and change modification time from the filename

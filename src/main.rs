@@ -2,7 +2,7 @@ use clap::Parser;
 use walkdir::{DirEntry, WalkDir};
 mod stats;
 
-/// Search for a pattern in a file and display the lines that contain it.
+/// Search for a pattern in a file and change modification time from the filename
 #[derive(Parser)]
 struct Cli {
     /// The path to the file to read
@@ -31,7 +31,5 @@ fn main() {
         .filter_map(|e| e.ok())
         .filter(|e| !is_dir(e))
         .collect();
-    println!("{:?}", s);
-    //    .for_each(|e| println!("{}", e.file_name().to_str().unwrap_or("")));
-    //    .for_each(|e| println!("{}", e.path().display()));
+    println!("{}", serde_yaml::to_string(&s).unwrap());
 }

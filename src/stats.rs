@@ -1,5 +1,6 @@
 use crate::parser;
-use filetime::{set_file_mtime, FileTime};
+//use filetime::{set_file_mtime, FileTime};
+use little_exif::metadata::Metadata;
 use serde::Serialize;
 use walkdir::DirEntry;
 
@@ -33,18 +34,25 @@ impl FromIterator<DirEntry> for Stats {
             //filename: i.file_name().to_str()
             s.num_files += 1;
 
-            match p.captures(i.file_name().to_str().unwrap()) {
-                None => {
-                    s.num_skipped_files += 1;
-                    s.skipped_files
-                        .push(String::from(i.path().to_str().unwrap()));
-                }
-                Some(date_time) => {
-                    s.num_parsed_files += 1;
-                    let mtime = FileTime::from_unix_time(date_time.timestamp(), 0);
-                    set_file_mtime(i.path().to_str().unwrap(), mtime).unwrap();
-                }
+            println!("{} {}", i.path().display(), i.file_name().to_str().unwrap());
+
+            let metadata = Metadata::new_from_path(i.path()).unwrap();
+            for tag in metadata.data() {
+                println!("{:?}", tag);
             }
+
+            //match p.captures(i.file_name().to_str().unwrap()) {
+            //    None => {
+            //        s.num_skipped_files += 1;
+            //        s.skipped_files
+            //            .push(String::from(i.path().to_str().unwrap()));
+            //    }
+            //    Some(date_time) => {
+            //        s.num_parsed_files += 1;
+            //        let mtime = FileTime::from_unix_time(date_time.timestamp(), 0);
+            //        set_file_mtime(i.path().to_str().unwrap(), mtime).unwrap();
+            //    }
+            //}
         }
 
         s

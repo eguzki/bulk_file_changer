@@ -1,7 +1,9 @@
 use crate::parser;
 //use filetime::{set_file_mtime, FileTime};
-use little_exif::metadata::Metadata;
+//use little_exif::metadata::Metadata;
+use exif::{DateTime, In, Reader, Tag, Value};
 use serde::Serialize;
+use std::fs::File;
 use walkdir::DirEntry;
 
 // Parsing stats
@@ -36,17 +38,49 @@ impl FromIterator<DirEntry> for Stats {
 
             println!("{} {}", i.path().display(), i.file_name().to_str().unwrap());
 
-            match Metadata::new_from_path(i.path()) {
-                Ok(metadata) => {
-                    println!("=== HELLO!");
-                    for tag in metadata.data() {
-                        println!("{:?}", tag);
+            let file = File::open(i.path()).unwrap();
+            let mut bufreader = std::io::BufReader::new(&file);
+            let exifreader = exif::Reader::new();
+            match exifreader.read_from_container(&mut bufreader) {
+                Ok(exif) => {
+                    for f in exif.fields() {
+                        println!(
+                            "  {}/{}: {}",
+                            f.ifd_num.index(),
+                            f.tag,
+                            f.display_value().with_unit(&exif)
+                        );
+                        println!("      {:?}", f.value);
+                    }
+                    // To parse a DateTime-like field, `DateTime::from_ascii` can be used.
+                    if let Some(field) = exif.get_field(Tag::DateTime, In::PRIMARY) {
+                        match field.value {
+                            Value::Ascii(ref vec) if !vec.is_empty() => {
+                                if let Ok(datetime) = DateTime::from_ascii(&vec[0]) {
+                                    println!("Year of DateTime is {}.", datetime.year);
+                                }
+                            }
+                            _ => {}
+                        }
                     }
                 }
-                Err(e) => println!("error parsing metadata: {e:?}"),
+                Err(e) => match &e {
+                    exif::Error::NotFound(msg) => println!("No Exif data found: {msg:?}"),
+                    other_error => println!("error parsing metadata: {other_error:?}"),
+                },
             }
+            //let exif = exifreader.read_from_container(&mut bufreader).unwrap();
 
-            println!("=== HELLO! 222");
+            //match Metadata::new_from_path(i.path()) {
+            //    Ok(metadata) => {
+            //        println!("=== HELLO!");
+            //        for tag in metadata.data() {
+            //            println!("{:?}", tag);
+            //        }
+            //    }
+            //    Err(e) => println!("error parsing metadata: {e:?}"),
+            //}
+
             //match p.captures(i.file_name().to_str().unwrap()) {
             //    None => {
             //        s.num_skipped_files += 1;

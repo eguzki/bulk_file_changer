@@ -1,5 +1,5 @@
 [package]
-name = "bulk_file_changer"
+name = "set_date_image_metadata"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,4 +13,4 @@ serde_yaml = "0.9"
 regex = "1.10"
 chrono = "0.4.34"
 filetime = "0.2"
-little_exif = "0.3.2"
+little_exif = "0.3.3"

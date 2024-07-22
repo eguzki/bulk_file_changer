@@ -1,11 +1,11 @@
-# Bulk File Changer
+# Bulk image metadata setter
 
-Search for a pattern in a file and change modification time from the filename
+Add date to image metadata when missing.
+
+Date parsed from file name.
 
 ```bash
-Search for a pattern in a file and change modification time from the filename
-
-Usage: bulk_file_changer <PATH>
+Usage: set_date_image_metadata <PATH>
 
 Arguments:
   <PATH>  The path to the file to read

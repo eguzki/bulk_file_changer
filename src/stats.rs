@@ -36,11 +36,17 @@ impl FromIterator<DirEntry> for Stats {
 
             println!("{} {}", i.path().display(), i.file_name().to_str().unwrap());
 
-            let metadata = Metadata::new_from_path(i.path()).unwrap();
-            for tag in metadata.data() {
-                println!("{:?}", tag);
+            match Metadata::new_from_path(i.path()) {
+                Ok(metadata) => {
+                    println!("=== HELLO!");
+                    for tag in metadata.data() {
+                        println!("{:?}", tag);
+                    }
+                }
+                Err(e) => println!("error parsing metadata: {e:?}"),
             }
 
+            println!("=== HELLO! 222");
             //match p.captures(i.file_name().to_str().unwrap()) {
             //    None => {
             //        s.num_skipped_files += 1;

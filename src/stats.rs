@@ -1,7 +1,8 @@
+use crate::datetime_tag_parser;
 use crate::parser;
 //use filetime::{set_file_mtime, FileTime};
 //use little_exif::metadata::Metadata;
-use exif::{DateTime, In, Reader, Tag, Value};
+use exif::{DateTime, In, Tag, Value};
 use serde::Serialize;
 use std::fs::File;
 use walkdir::DirEntry;
@@ -10,18 +11,24 @@ use walkdir::DirEntry;
 #[derive(Serialize, PartialEq, Debug)]
 pub struct Stats {
     num_files: u32,
-    num_parsed_files: u32,
-    num_skipped_files: u32,
-    skipped_files: Vec<String>,
+    num_files_with_datetime_tag: u32,
+    num_files_failed_tag_parsing: u32,
+    num_files_missing_datetime_tag: u32,
+    num_files_failed_filename_parsing: u32,
+    filenames_tag_unparseable: Vec<String>,
+    filenames_name_unparseable: Vec<String>,
 }
 
 impl Stats {
     fn new() -> Stats {
         Stats {
             num_files: 0,
-            num_parsed_files: 0,
-            num_skipped_files: 0,
-            skipped_files: Vec::new(),
+            num_files_with_datetime_tag: 0,
+            num_files_failed_tag_parsing: 0,
+            num_files_missing_datetime_tag: 0,
+            num_files_failed_filename_parsing: 0,
+            filenames_tag_unparseable: Vec::new(),
+            filenames_name_unparseable: Vec::new(),
         }
     }
 }
@@ -38,20 +45,27 @@ impl FromIterator<DirEntry> for Stats {
 
             println!("{} {}", i.path().display(), i.file_name().to_str().unwrap());
 
+            match datetime_tag_parser::captures(i.path()) {
+                Some(_) => s.num_files_with_datetime_tag += 1,
+                None => {
+                    s.num_files_missing_datetime_tag += 1;
+                }
+            }
+
             let file = File::open(i.path()).unwrap();
             let mut bufreader = std::io::BufReader::new(&file);
             let exifreader = exif::Reader::new();
             match exifreader.read_from_container(&mut bufreader) {
                 Ok(exif) => {
-                    for f in exif.fields() {
-                        println!(
-                            "  {}/{}: {}",
-                            f.ifd_num.index(),
-                            f.tag,
-                            f.display_value().with_unit(&exif)
-                        );
-                        println!("      {:?}", f.value);
-                    }
+                    //for f in exif.fields() {
+                    //    println!(
+                    //        "  {}/{}: {}",
+                    //        f.ifd_num.index(),
+                    //        f.tag,
+                    //        f.display_value().with_unit(&exif)
+                    //    );
+                    //    println!("      {:?}", f.value);
+                    //}
                     // To parse a DateTime-like field, `DateTime::from_ascii` can be used.
                     if let Some(field) = exif.get_field(Tag::DateTime, In::PRIMARY) {
                         match field.value {

@@ -1,5 +1,6 @@
 use clap::Parser;
 use walkdir::{DirEntry, WalkDir};
+mod datetime_tag_parser;
 mod parser;
 mod stats;
 

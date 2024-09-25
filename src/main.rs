@@ -5,13 +5,13 @@ mod datetime_tag_parser;
 mod datetime_tag_writer;
 mod stats;
 
-/// Search for a pattern in a file and change modification time from the filename
+/// Add date to image Exif metadata when missing.
 #[derive(Parser)]
 struct Cli {
     #[command(flatten)]
     verbose: clap_verbosity_flag::Verbosity,
 
-    /// The path to the file to read
+    /// The path to the base directory
     path: std::path::PathBuf,
 }
 

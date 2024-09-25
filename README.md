@@ -1,21 +1,26 @@
-# Bulk image metadata setter
+# Bulk image Exif metadata
 
 Add date to image metadata when missing.
 
 Date parsed from file name.
 
 ```bash
-Usage: set_date_image_metadata <PATH>
+Add date to image Exif metadata when missing
+
+Usage: set_date_image_metadata [OPTIONS] <PATH>
 
 Arguments:
-  <PATH>  The path to the file to read
+  <PATH>  The path to the base directory
 
 Options:
-  -h, --help  Print help
+  -v, --verbose...  Increase logging verbosity
+  -q, --quiet...    Decrease logging verbosity
+  -h, --help        Print help
 ```
 
-Display the last modification time of FILE
+Display Exif metadata
 
 ```
-date -r <filename> "+%d-%m-%Y %H:%M:%S"
+sudo apt install exif
+exif picture.jpg
 ```

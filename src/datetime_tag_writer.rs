@@ -21,6 +21,6 @@ pub fn write_tag(path: &Path, date_tag: DateTime<Utc>) -> Result<(), String> {
 
     match metadata.write_to_file(path) {
         Ok(_) => Ok(()),
-        Err(e) => return Err(e.to_string()),
+        Err(e) => Err(e.to_string()),
     }
 }

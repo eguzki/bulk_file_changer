@@ -11,11 +11,14 @@ pub fn captures(path: &Path) -> Result<Option<chrono::DateTime<chrono::Utc>>, ex
         .continue_on_error(true)
         .read_from_container(&mut bufreader);
 
-    let exif = if let Err(exif::Error::PartialResult(partial)) = result {
-        let (exif, _) = partial.into_inner();
-        exif
-    } else {
-        result?
+    let exif = match result {
+        Err(exif::Error::PartialResult(partial)) => {
+            let (exif, _) = partial.into_inner();
+            exif
+        }
+        Err(exif::Error::NotFound(_)) => return Ok(None),
+        Ok(exif) => exif,
+        Err(e) => return Err(e),
     };
 
     //for f in exif.fields() {

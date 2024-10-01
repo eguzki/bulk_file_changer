@@ -212,8 +212,8 @@ dependencies = [
  "clap",
  "clap-verbosity-flag",
  "env_logger",
+ "exif",
  "filetime",
- "kamadak-exif",
  "lazy_static",
  "little_exif",
  "log",
@@ -251,6 +251,14 @@ name = "equivalent"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
+
+[[package]]
+name = "exif"
+version = "0.5.5"
+source = "git+https://github.com/kamadak/exif-rs.git?rev=8523b0f06f6fe4f8eb6022d6ae0922f5c1b3477c#8523b0f06f6fe4f8eb6022d6ae0922f5c1b3477c"
+dependencies = [
+ "mutate_once",
+]
 
 [[package]]
 name = "filetime"
@@ -328,15 +336,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "406cda4b368d531c842222cf9d2600a9a4acce8d29423695379c6868a143a9ee"
 dependencies = [
  "wasm-bindgen",
-]
-
-[[package]]
-name = "kamadak-exif"
-version = "0.5.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef4fc70d0ab7e5b6bafa30216a6b48705ea964cdfc29c050f2412295eba58077"
-dependencies = [
- "mutate_once",
 ]
 
 [[package]]

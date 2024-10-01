@@ -1,13 +1,13 @@
-# Bulk image Exif metadata
+# Endara
 
-Add date to image metadata when missing.
+CLI tool to add `DateTimeOriginal` Exif Tag to image metadata.
 
-Date parsed from file name.
+When exif tag is not found, new tag will be set from date parsed from the file name.
 
 ```bash
 Add date to image Exif metadata when missing
 
-Usage: set_date_image_metadata [OPTIONS] <PATH>
+Usage: endara [OPTIONS] <PATH>
 
 Arguments:
   <PATH>  The path to the base directory

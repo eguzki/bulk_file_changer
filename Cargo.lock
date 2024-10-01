@@ -205,6 +205,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19d374276b40fb8bbdee95aef7c7fa6b5316ec764510eb64b8dd0e2ed0d7e7f5"
 
 [[package]]
+name = "endara"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "clap",
+ "clap-verbosity-flag",
+ "env_logger",
+ "filetime",
+ "kamadak-exif",
+ "lazy_static",
+ "little_exif",
+ "log",
+ "regex",
+ "serde",
+ "serde_yaml",
+ "walkdir",
+]
+
+[[package]]
 name = "env_filter"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -493,25 +512,6 @@ dependencies = [
  "ryu",
  "serde",
  "unsafe-libyaml",
-]
-
-[[package]]
-name = "set_date_image_metadata"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "clap",
- "clap-verbosity-flag",
- "env_logger",
- "filetime",
- "kamadak-exif",
- "lazy_static",
- "little_exif",
- "log",
- "regex",
- "serde",
- "serde_yaml",
- "walkdir",
 ]
 
 [[package]]

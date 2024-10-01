@@ -25,17 +25,13 @@ fn img_yyyymmdd(input: &str) -> Option<DateTime<Utc>> {
         if let Some(matched_yyyy) = caps.name("yyyy") {
             if let Some(matched_mm) = caps.name("mm") {
                 if let Some(matched_dd) = caps.name("dd") {
-                    return Some(
-                        NaiveDate::from_ymd_opt(
-                            FromStr::from_str(matched_yyyy.as_str()).unwrap(),
-                            FromStr::from_str(matched_mm.as_str()).unwrap(),
-                            FromStr::from_str(matched_dd.as_str()).unwrap(),
-                        )
-                        .unwrap()
-                        .and_hms_milli_opt(0, 0, 0, 0)
-                        .unwrap()
-                        .and_utc(),
-                    );
+                    if let Some(date) = NaiveDate::from_ymd_opt(
+                        FromStr::from_str(matched_yyyy.as_str()).unwrap(),
+                        FromStr::from_str(matched_mm.as_str()).unwrap(),
+                        FromStr::from_str(matched_dd.as_str()).unwrap(),
+                    ) {
+                        return Some(date.and_hms_milli_opt(0, 0, 0, 0).unwrap().and_utc());
+                    }
                 }
             }
         }

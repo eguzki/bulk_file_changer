@@ -18,9 +18,31 @@ Options:
   -h, --help        Print help
 ```
 
+### Run example
+
+```bash
+$ endara -vvv ~/tmp/pics/
+[2024-10-01T21:54:30Z DEBUG endara] Reading path: "/home/eguzki/tmp/pics/"
+[2024-10-01T21:54:30Z DEBUG endara::stats] /home/eguzki/tmp/pics/428934165_278732.jpg 428934165_278732.jpg
+num_files: 1
+num_files_with_datetime_tag: 0
+num_files_failed_tag_parsing: 0
+num_files_missing_datetime_tag: 1
+num_files_failed_filename_parsing: 1
+num_files_successfully_tagged: 0
+num_files_failed_tagging: 0
+filenames_tag_unparseable: []
+filenames_name_unparseable:
+- /home/eguzki/tmp/pics/428934165_278732.jpg
+filenames_name_untaggeable: []
+```
+
+### Misc
+
 Display Exif metadata
 
 ```
 sudo apt install exif
 exif picture.jpg
 ```
+

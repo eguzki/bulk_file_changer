@@ -31,40 +31,34 @@ pub fn captures(path: &Path) -> Result<Option<chrono::DateTime<chrono::Utc>>, ex
     //    println!("      {:?}", f.value);
     //}
 
-    match exif.get_field(Tag::DateTimeOriginal, In::PRIMARY) {
-        Some(field) => match field.value {
-            Value::Ascii(ref vec) if !vec.is_empty() => {
-                let datetime = DateTime::from_ascii(&vec[0])?;
-                Ok(Some(
-                    NaiveDate::from_ymd_opt(
-                        i32::from(datetime.year),
-                        u32::from(datetime.month),
-                        u32::from(datetime.day),
-                    )
-                    .unwrap()
-                    .and_hms_milli_opt(
-                        u32::from(datetime.hour),
-                        u32::from(datetime.minute),
-                        u32::from(datetime.second),
-                        0,
-                    )
-                    .unwrap()
-                    .and_utc(),
-                ))
-            }
-            _ => Ok(None),
+    let field = match exif.get_field(Tag::DateTime, In::PRIMARY) {
+        Some(field) => field,
+        None => match exif.get_field(Tag::DateTimeOriginal, In::PRIMARY) {
+            Some(field) => field,
+            None => return Ok(None),
         },
-        None => Ok(None),
-    }
+    };
 
-    //if let Some(field) = exif.get_field(Tag::DateTime, In::PRIMARY) {
-    //    match field.value {
-    //        Value::Ascii(ref vec) if !vec.is_empty() => {
-    //            if let Ok(datetime) = DateTime::from_ascii(&vec[0]) {
-    //                println!("Year of DateTime is {}.", datetime.year);
-    //            }
-    //        }
-    //        _ => {}
-    //    }
-    //}
+    match field.value {
+        Value::Ascii(ref vec) if !vec.is_empty() => {
+            let datetime = DateTime::from_ascii(&vec[0])?;
+            Ok(Some(
+                NaiveDate::from_ymd_opt(
+                    i32::from(datetime.year),
+                    u32::from(datetime.month),
+                    u32::from(datetime.day),
+                )
+                .unwrap()
+                .and_hms_milli_opt(
+                    u32::from(datetime.hour),
+                    u32::from(datetime.minute),
+                    u32::from(datetime.second),
+                    0,
+                )
+                .unwrap()
+                .and_utc(),
+            ))
+        }
+        _ => Ok(None),
+    }
 }

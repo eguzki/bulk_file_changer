@@ -30,13 +30,14 @@ pub fn captures(path: &Path) -> Result<Option<chrono::DateTime<chrono::Utc>>, ex
     //    );
     //    println!("      {:?}", f.value);
     //}
+    //
+    let field = exif
+        .get_field(Tag::DateTime, In::PRIMARY)
+        .or(exif.get_field(Tag::DateTimeOriginal, In::PRIMARY));
 
-    let field = match exif.get_field(Tag::DateTime, In::PRIMARY) {
+    let field = match field {
         Some(field) => field,
-        None => match exif.get_field(Tag::DateTimeOriginal, In::PRIMARY) {
-            Some(field) => field,
-            None => return Ok(None),
-        },
+        None => return Ok(None),
     };
 
     match field.value {

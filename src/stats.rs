@@ -50,7 +50,7 @@ impl FromIterator<DirEntry> for Stats {
             s.num_files += 1;
 
             if let Some(ext) = i.path().extension().and_then(OsStr::to_str) {
-                if !["jpeg", "jpg", "png"].contains(&ext) {
+                if !["jpeg", "jpg", "JPG", "png"].contains(&ext) {
                     s.num_files_not_images += 1;
                     s.filenames_not_images.push(i.path().display().to_string());
                     continue;

@@ -43,22 +43,22 @@ pub fn captures(path: &Path) -> Result<Option<chrono::DateTime<chrono::Utc>>, ex
     match field.value {
         Value::Ascii(ref vec) if !vec.is_empty() => {
             let datetime = DateTime::from_ascii(&vec[0])?;
-            Ok(Some(
-                NaiveDate::from_ymd_opt(
-                    i32::from(datetime.year),
-                    u32::from(datetime.month),
-                    u32::from(datetime.day),
-                )
-                .unwrap()
-                .and_hms_milli_opt(
+            match NaiveDate::from_ymd_opt(
+                i32::from(datetime.year),
+                u32::from(datetime.month),
+                u32::from(datetime.day),
+            ) {
+                Some(date) => match date.and_hms_milli_opt(
                     u32::from(datetime.hour),
                     u32::from(datetime.minute),
                     u32::from(datetime.second),
                     0,
-                )
-                .unwrap()
-                .and_utc(),
-            ))
+                ) {
+                    Some(native_date_time) => Ok(Some(native_date_time.and_utc())),
+                    None => Ok(None),
+                },
+                None => Ok(None),
+            }
         }
         _ => Ok(None),
     }
